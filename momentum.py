@@ -10,6 +10,10 @@ read_library = store['US.EOD.CALC']
 write_library = store['US.EOD.MOM']
 
 test = ['AAPL_EOD_CALC']
+
+repoed_testfile  = read_library.read(*test)
+repoed_testfile.data.to_excel("testfile.xlsx")
+
 for symbol in test: #read_library.list_symbols():
     # Load data from local DB
     try:
