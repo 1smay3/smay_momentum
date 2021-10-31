@@ -2,13 +2,15 @@
 from arctic import Arctic
 import logging
 
-logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='data.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 store = Arctic('localhost')
 
 read_library = store['US.EOD']
 write_library = store['US.EOD.CALC']
 
+# Add functionality to see if calculations have already been done, and to add new data and run
+# calculations in an append fashion
 for symbol in read_library.list_symbols():
     # Load data from local DB
     try:
