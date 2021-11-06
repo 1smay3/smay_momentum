@@ -19,15 +19,7 @@ for symbol in test: #read_library.list_symbols():
     try:
         df = read_library.read(symbol)
         data = df.data
-        data['st_mom1'] = data['adjClose'].rolling(window=st_1).mean().shift(1)
-        data['st_mom2'] = data['adjClose'].rolling(window=st_2).mean().shift(1)
-        data['st_mom3'] = data['adjClose'].rolling(window=st_3).mean().shift(1)
-
-        data['lt_mom1'] = data['adjClose'].rolling(window=lt_1).mean().shift(1)
-        data['lt_mom2'] = data['adjClose'].rolling(window=lt_2).mean().shift(1)
-        data['lt_mom3'] = data['adjClose'].rolling(window=lt_3).mean().shift(1)
-
-        data[['adjClose', 'st_mom1', 'st_mom2', 'st_mom3', 'lt_mom1', 'lt_mom2', 'lt_mom3']].plot()
-        plt.show()
+        for signal in signals:
+            data['ma_' + str(signal)] = data['adjClose'].rolling(window=signal).mean().shift(1)
     except:
             logging.error('%s raised an error', symbol)
