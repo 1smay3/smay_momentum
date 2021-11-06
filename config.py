@@ -1,10 +1,11 @@
 # Naive moving average parameters
-signal_dict = {'st_1': 5,
-               'st_2': 10,
+signal_dict = {'st_1': 15,
+               'st_2': 20,
                'st_3': 25,
-               'lt_1': 25,
-               'lt_2': 75,
-               'lt_3': 150
+               'lt_1': 50,
+               'lt_2': 100,
+               'lt_3': 252
                }
 
-trading_cost = 0
+# 50bps trading cost
+trading_cost = 0.005

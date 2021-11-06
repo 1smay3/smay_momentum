@@ -1,8 +1,9 @@
 from arctic import Arctic
 from config import *
-import matplotlib.pyplot as plt
+from plotting import returns_plot
 import logging
 import numpy as np
+
 
 logging.basicConfig(filename='momentum.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
@@ -14,9 +15,9 @@ test = ['AAPL_EOD_CALC']
 
 
 def momentum_signal(dataframe, short, long):
-    if dataframe[short] <= dataframe[long]:
+    if dataframe[short] < dataframe[long]:
         val = -1
-    elif dataframe[short] >= dataframe[long]:
+    elif dataframe[short] > dataframe[long]:
         val = 1
     else:
         val = 0
@@ -26,7 +27,7 @@ def momentum_signal(dataframe, short, long):
 repoed_testfile = read_library.read(*test)
 repoed_testfile.data.to_excel("testfile.xlsx")
 
-for symbol in test:  # read_library.list_symbols():
+for symbol in test:# read_library.list_symbols():
     # Load data from local DB
     try:
         # Read data for given symbol
@@ -40,7 +41,7 @@ for symbol in test:  # read_library.list_symbols():
     for key, value in signal_dict.items():
         data[key] = data['adjClose'].rolling(window=value).mean().shift(1)
         plot_data = data.drop(columns=['open', 'high', 'low', 'close', 'volume', 'unadjustedVolume', 'change',
-                                       'vwap', 'long_only_cum_ret'])
+                                       'vwap'])
 
     # Calculate signals given moving averages
     for i in range(int(len(signal_dict) / 2)):
@@ -61,5 +62,7 @@ for symbol in test:  # read_library.list_symbols():
             # Here, signals have changed so take intraday return and deduct trading cost
             plot_data['signal_return'][x] = (plot_data['ts_avg'][x] * plot_data['intra_day_ret'][x]) - trading_cost
 
-plot_data.plot()
-plt.show()
+    plot_data['cum_ret'] = (1 + plot_data.signal_return).cumprod() - 1
+
+    fig = returns_plot(plot_data, "ts_avg", "long_only_cum_ret", "cum_ret")
+    fig.show()
