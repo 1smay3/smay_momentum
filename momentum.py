@@ -46,7 +46,6 @@ for symbol in test:  # read_library.list_symbols():
     for i in range(int(len(signal_dict) / 2)):
         st = 'st_' + str((i + 1))
         lt = 'lt_' + str((i + 1))
-        plot_data['ts_' + str((i + 1))] = plot_data.apply(momentum_signal, args=(str(st), lt), axis=1)
+        plot_data['ts_' + str((i + 1))] = plot_data.apply(momentum_signal, args=(st, lt), axis=1)
 
-plot_data.plot()
-plt.show()
+
