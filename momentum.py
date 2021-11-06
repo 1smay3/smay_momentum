@@ -11,15 +11,29 @@ write_library = store['US.EOD.MOM']
 
 test = ['AAPL_EOD_CALC']
 
-repoed_testfile  = read_library.read(*test)
+
+def momentum_signal(st, lt, row):
+    if row[st] < row[lt]:
+        val = -1
+    elif row[st] > row[lt]:
+        val = 1
+    else:
+        val = 0
+    return val
+
+
+repoed_testfile = read_library.read(*test)
 repoed_testfile.data.to_excel("testfile.xlsx")
 
-for symbol in test: #read_library.list_symbols():
+for symbol in test:  # read_library.list_symbols():
     # Load data from local DB
     try:
         df = read_library.read(symbol)
         data = df.data
         for signal in signals:
             data['ma_' + str(signal)] = data['adjClose'].rolling(window=signal).mean().shift(1)
+            plot_data = data.drop(columns=['open', 'high', 'low', 'close', 'volume', 'unadjustedVolume', 'change',
+                                           'vwap', 'intra_day_ret', 'total_day_ret', 'long_only_cum_ret'])
+
     except:
-            logging.error('%s raised an error', symbol)
+        logging.error('%s raised an error', symbol)
