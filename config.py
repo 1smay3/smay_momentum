@@ -7,3 +7,4 @@ signal_dict = {'st_1': 5,
                'lt_3': 150
                }
 
+trading_cost = 0

@@ -40,7 +40,7 @@ for symbol in test:  # read_library.list_symbols():
     for key, value in signal_dict.items():
         data[key] = data['adjClose'].rolling(window=value).mean().shift(1)
         plot_data = data.drop(columns=['open', 'high', 'low', 'close', 'volume', 'unadjustedVolume', 'change',
-                                       'vwap', 'intra_day_ret', 'total_day_ret', 'long_only_cum_ret'])
+                                       'vwap', 'long_only_cum_ret'])
 
     # Calculate signals given moving averages
     for i in range(int(len(signal_dict) / 2)):
@@ -48,4 +48,18 @@ for symbol in test:  # read_library.list_symbols():
         lt = 'lt_' + str((i + 1))
         plot_data['ts_' + str((i + 1))] = plot_data.apply(momentum_signal, args=(st, lt), axis=1)
 
+    # Average moving average signals for position sizing
+    signal_cols = [col for col in plot_data if col.startswith('ts_')]
+    plot_data['ts_avg'] = plot_data[signal_cols].mean(axis=1)
 
+    # Calculate returns for given signal
+    plot_data['signal_return'] = np.zeros(len(plot_data['ts_avg']))
+    for x in range(1, len(plot_data['ts_avg'])):
+        if plot_data['ts_avg'][x] == plot_data['ts_avg'][x - 1]:
+            plot_data['signal_return'][x] = plot_data['ts_avg'][x] * plot_data['total_day_ret'][x]
+        else:
+            # Here, signals have changed so take intraday return and deduct trading cost
+            plot_data['signal_return'][x] = (plot_data['ts_avg'][x] * plot_data['intra_day_ret'][x]) - trading_cost
+
+plot_data.plot()
+plt.show()
