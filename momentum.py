@@ -30,10 +30,11 @@ for symbol in test:  # read_library.list_symbols():
     try:
         df = read_library.read(symbol)
         data = df.data
-        for signal in signals:
-            data['ma_' + str(signal)] = data['adjClose'].rolling(window=signal).mean().shift(1)
+        for key, value in signal_dict.items():
+            data[key] = data['adjClose'].rolling(window=value).mean().shift(1)
             plot_data = data.drop(columns=['open', 'high', 'low', 'close', 'volume', 'unadjustedVolume', 'change',
                                            'vwap', 'intra_day_ret', 'total_day_ret', 'long_only_cum_ret'])
-
     except:
         logging.error('%s raised an error', symbol)
+plot_data.plot()
+plt.show()
