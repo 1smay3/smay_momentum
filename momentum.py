@@ -1,17 +1,22 @@
-from arctic import Arctic
-from config import *
-from plotting import returns_plot
 import logging
+
 import numpy as np
+import pandas as pd
+from arctic import Arctic
 
+from config import *
+from metrics import *
 
-logging.basicConfig(filename='momentum.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='logs/momentum.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 store = Arctic('localhost')
 read_library = store['US.EOD.CALC']
 write_library = store['US.EOD.MOM']
 
 test = ['AAPL_EOD_CALC']
+
+repoed_testfile = read_library.read(*test)
+repoed_testfile.data.to_excel("testfile.xlsx")
 
 
 def momentum_signal(dataframe, short, long):
@@ -24,16 +29,13 @@ def momentum_signal(dataframe, short, long):
     return val
 
 
-repoed_testfile = read_library.read(*test)
-repoed_testfile.data.to_excel("testfile.xlsx")
-
-for symbol in test:# read_library.list_symbols():
+for symbol in test:  # read_library.list_symbols():
     # Load data from local DB
     try:
         # Read data for given symbol
         df = read_library.read(symbol)
         data = df.data
-
+        data.index = pd.to_datetime(data.index)
     except:
         logging.error('%s raised an error', symbol)
 
@@ -62,7 +64,9 @@ for symbol in test:# read_library.list_symbols():
             # Here, signals have changed so take intraday return and deduct trading cost
             plot_data['signal_return'][x] = (plot_data['ts_avg'][x] * plot_data['intra_day_ret'][x]) - trading_cost
 
-    plot_data['cum_ret'] = (1 + plot_data.signal_return).cumprod() - 1
+    plot_data['ts_ret'] = cumulative_ret(plot_data, "signal_return")
 
-    fig = returns_plot(plot_data, "ts_avg", "long_only_cum_ret", "cum_ret")
-    fig.show()
+    # fig = returns_plot(plot_data, "ts_avg", "long_only_cum_ret", "ts_ret")
+    # fig.show()
+
+print(sharpe_ratio(plot_data, "signal_return"))
