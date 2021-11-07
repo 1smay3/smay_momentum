@@ -1,0 +1,4 @@
+pandas==1.1.0
+arctic==1.79.4
+numpy==1.21.2
+plotly==5.3.1
