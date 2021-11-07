@@ -4,7 +4,7 @@ import logging
 import pandas as pd
 from arctic import Arctic
 
-logging.basicConfig(filename='logs/data.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='../../logs/data.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 store = Arctic('localhost')
 

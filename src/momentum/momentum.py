@@ -4,10 +4,10 @@ import numpy as np
 import pandas as pd
 from arctic import Arctic
 
-from config import *
-from metrics import *
+from src.momentum.config import *
+from src.momentum.metrics import *
 
-logging.basicConfig(filename='logs/momentum.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(filename='../../logs/momentum.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 store = Arctic('localhost')
 read_library = store['US.EOD.CALC']

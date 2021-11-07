@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from metrics import *
+from src.momentum.metrics import *
 
 np.random.seed(13)
 dist = np.random.normal(0.002, 0.01, 260)
